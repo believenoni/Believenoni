@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JetDrop Delivery - Premium Products</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F7F9FC;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 5%;
+            margin-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 5%;
+            background: var(--gradient-1);
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 1rem;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        /* Login & Auth Pages */
+        .auth-container {
+            max-width: 450px;
+            margin: 3rem auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+        }
+
+        .auth-switch a {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* Dashboard */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient-1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .recent-orders {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .table th {
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status.delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Admin Panel */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-sidebar {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .admin-menu {
+            list-style: none;
+        }
+
+        .admin-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-menu a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .admin-menu a:hover, .admin-menu a.active {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            padding: 0.8rem 1.5rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Logout Page */
+        .logout-container {
+            text-align: center;
+            padding: 5rem 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .logout-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Products */
+        .products-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.5rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .product-image {
+            height: 250px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-category {
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            font-weight: 700;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Cart */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.2);
+            z-index: 2000;
+            transition: right 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            background: var(--gradient-1);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .remove-item {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 2px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* Payment */
+        .payment-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .whatsapp-checkout {
+            background: #25D366;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .order-summary {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-item.total {
+            font-weight: 800;
+            font-size: 1.2rem;
+            border-top: 2px solid #ddd;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--dark);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            display: none;
+            z-index: 3000;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo" onclick="showPage('home')">
+            <i class="fas fa-paper-plane"></i>
+            JetDrop Delivery
+        </div>
+        <ul class="nav-links">
+            <li><a onclick="showPage('home')">Home</a></li>
+            <li><a onclick="showPage('products')">Products</a></li>
+            <li><a onclick="showPage('dashboard')">Dashboard</a></li>
+            <li><a onclick="showPage('admin')">Admin</a></li>
+            <li><a onclick="showPage('login')">Login</a></li>
+            <li class="cart-icon" onclick="toggleCart()">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <h1>JetDrop Delivery 🚀</h1>
+            <p>Premium jewelry, car keys, teddy bears & fresh flowers delivered to your doorstep</p>
+            <button class="cta-button" onclick="showPage('products')">Shop Now</button>
+        </div>
+    </div>
+
+    <!-- Products Page -->
+    <div id="products" class="page">
+        <div class="products-header">
+            <h2>Our Collection</h2>
+            <p>Premium quality products with real images</p>
+        </div>
+
+        <div class="category-filter">
+            <button class="filter-btn active" onclick="filterProducts('all')">All</button>
+            <button class="filter-btn" onclick="filterProducts('jewelry')">Jewelry</button>
+            <button class="filter-btn" onclick="filterProducts('toys')">Teddy Bears</button>
+            <button class="filter-btn" onclick="filterProducts('flowers')">Fresh Flowers</button>
+            <button class="filter-btn" onclick="filterProducts('keys')">Car Keys</button>
+            <button class="filter-btn" onclick="filterProducts('safe')">Safe Box</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="page">
+        <div class="auth-container">
+            <h2><i class="fas fa-user-circle" style="font-size: 3rem; color: var(--primary); display: block; margin-bottom: 1rem;"></i>Welcome Back</h2>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+            <div class="auth-switch">
+                Don't have an account? <a onclick="showPage('register')">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="dashboard" class="page">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h2>My Dashboard</h2>
+                <button class="btn-primary" onclick="showPage('products')">Continue Shopping</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-shopping-bag stat-icon"></i>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-heart stat-icon"></i>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Wishlist Items</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gift stat-icon"></i>
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Gifts Sent</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star stat-icon"></i>
+                    <div class="stat-value">4.9</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+            </div>
+
+            <div class="recent-orders">
+                <h3>Recent Orders</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Product</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#JD-001</td>
+                            <td>Engagement Ring - Gold Classic</td>
+                            <td>Mar 3, 2026</td>
+                            <td><span class="status delivered">Delivered</span></td>
+                            <td>₦50,000</td>
+                        </tr>
+                        <tr>
+                            <td>#JD-002</td>
+                            <td>Tesla Model 3/Y Key</td>
+                            <td>Mar 2, 2026</td>
+                            <td><span class="status pending">Pending</span></td>
+                            <td>₦100,000</td>
+                        </tr>
+                        <tr>
+                            <td>#JD-003</td>
+                            <td>Teddy Bear Jumbo (200cm)</td>
+                            <td>Mar 1, 2026</td>
+                            <td><span class="status delivered">Delivered</span></td>
+                            <td>₦95,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button class="btn-primary" onclick="showPage('logout')" style="margin-top: 2rem; background: #ff4757;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin" class="page">
+        <div class="admin-grid">
+            <div class="admin-sidebar">
+                <h3 style="margin-bottom: 2rem;">Admin Menu</h3>
+                <ul class="admin-menu">
+                    <li><a class="active" onclick="showAdminSection('products')"><i class="fas fa-box"></i> Products</a></li>
+                    <li><a onclick="showAdminSection('orders')"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a onclick="showAdminSection('customers')"><i class="fas fa-users"></i> Customers</a></li>
+                    <li><a onclick="showAdminSection('analytics')"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                    <li><a onclick="showPage('logout')"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+            <div class="admin-content">
+                <div class="admin-header">
+                    <h2>Manage Products</h2>
+                    <button class="btn-primary" onclick="showToast('Add Product feature coming soon!')">
+                        <i class="fas fa-plus"></i> Add New Product
+                    </button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Page -->
+    <div id="logout" class="page">
+        <div class="logout-container">
+            <i class="fas fa-check-circle logout-icon"></i>
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Successfully Logged Out!</h2>
+            <p style="color: #666; margin-bottom: 2rem; font-size: 1.1rem;">Thank you for using JetDrop Delivery. See you soon!</p>
+            <button class="cta-button" onclick="showPage('login')">Login Again</button>
+            <br><br>
+            <button class="cta-button" onclick="showPage('home')" style="background: var(--secondary);">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- Payment Page -->
+    <div id="payment" class="page">
+        <div class="payment-container">
+            <i class="fab fa-whatsapp" style="font-size: 4rem; color: #25D366; margin-bottom: 1rem;"></i>
+            <h2>Complete Your Order</h2>
+            <p>Send your order via WhatsApp</p>
+            
+            <div class="order-summary">
+                <div id="orderItems"></div>
+                <div class="summary-item">
+                    <span>Delivery:</span>
+                    <span>₦2,500</span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span id="paymentTotal">₦0</span>
+                </div>
+            </div>
+
+            <button class="whatsapp-checkout" onclick="sendWhatsAppOrder()">
+                <i class="fab fa-whatsapp"></i>
+                Send Order via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Your Cart</h3>
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cartTotal">₦0</span>
+            </div>
+            <button class="checkout-btn" onclick="goToPayment()">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Added to cart!</div>
+
+    <script>
+        // PRODUCTS DATA
+        const products = [
+            // JEWELRY - CUSTOMIZED
+            { id: 1, name: "Customized Bracelet", category: "jewelry", price: 45000, image: "https://ae01.alicdn.com/kf/S8976616272ff43d29a462d258f70f8217.jpg", desc: "Personalized Name Bracelet" },
+            { id: 2, name: "Customized Necklace", category: "jewelry", price: 46700, image: "https://ae01.alicdn.com/kf/S19e2c6b986a94aaa87d010a547a619b8r.jpg", desc: "Custom Name Pendant" },
+            
+            // ENGAGEMENT RINGS - ALL ₦50,000
+            { id: 23, name: "Engagement Ring - Silver Solitaire", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/Sef4ae8bb4cc14888aee7ab309afdd345I.jpg", desc: "Cubic Zirconia - Resizable" },
+            { id: 24, name: "Engagement Ring - Rose Gold Vintage", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/Sfa994870cefc496dade43da52a16a8714.jpg", desc: "18K Rose Gold - Resizable" },
+            { id: 25, name: "Engagement Ring Set - Gold", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/S3ab9031f5af349f2aeed5d6a11a511fb8.jpg", desc: "Wedding + Engagement - Resizable" },
+            { id: 26, name: "Engagement Ring - Rose Gold Square", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/HTB1j1JBQ4YaK1RjSZFnq6y80pXaS.jpg", desc: "Luxury Square Cut - Resizable" },
+            { id: 27, name: "Engagement Ring - Silver Marquise", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/S2a2645420fb246afad41e2f3580eb115i.jpg", desc: "Moissanite Diamond - Resizable" },
+            { id: 28, name: "Engagement Ring - Gold Classic", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/S7b48487217014f8aa53a9f7edc2fc957Z.jpg", desc: "2CT Lab Diamond - Resizable" },
+            { id: 29, name: "Engagement Ring - Silver Twist", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/S180b2857020c4a9387288067e63a2ab7x.jpg", desc: "Big Crystal - Resizable" },
+            { id: 30, name: "Engagement Ring - Silver Princess", category: "jewelry", price: 50000, image: "https://ae01.alicdn.com/kf/S24310af25d4f40979c27704ae1d48905j.jpg", desc: "Cubic Zirconia Bridal - Resizable" },
+
+            // JEWELRY SETS
+            { id: 3, name: "Women's Jewelry Set", category: "jewelry", price: 69999, image: "https://ae01.alicdn.com/kf/S691744dcb81947f99a0e9b4e9d2d59ed0.jpg", desc: "Necklace, Earrings & Ring" },
+            { id: 4, name: "Men's Jewelry Set", category: "jewelry", price: 70000, image: "https://ae01.alicdn.com/kf/S33cb0da77a5b45ee98d9f0d7cfb7e841Z.jpg", desc: "Cufflinks & Tie Clip Set" },
+
+            // TEDDY BEARS
+            { id: 5, name: "Teddy Bear Small (80cm)", category: "toys", price: 65000, image: "https://ae01.alicdn.com/kf/Sd78d765f2e40412a817ac0f383a755a3N.jpg", desc: "80cm Soft Plush" },
+            { id: 6, name: "Teddy Bear Medium (100cm)", category: "toys", price: 72000, image: "https://ae01.alicdn.com/kf/S2c64b2ee85b04375a100116fc076af96q.jpg", desc: "100cm Giant Plush" },
+            { id: 7, name: "Teddy Bear Large (120cm)", category: "toys", price: 78000, image: "https://ae01.alicdn.com/kf/S4008556bc4ed4634965fe3d61520b675l.jpg", desc: "120cm Large Plush" },
+            { id: 8, name: "Teddy Bear XL (160cm)", category: "toys", price: 85000, image: "https://ae01.alicdn.com/kf/S1734a08c64924170be5d1167495612b8V.jpg", desc: "160cm Extra Large" },
+            { id: 9, name: "Teddy Bear Jumbo (200cm)", category: "toys", price: 95000, image: "https://ae01.alicdn.com/kf/S2b08307cb4064ac5949411c3f510998ch.jpg", desc: "200cm Life-Size" },
+
+            // FLOWERS
+            { id: 10, name: "Fresh Red Roses Bouquet", category: "flowers", price: 80000, image: "https://ae01.alicdn.com/kf/S2af69fd290e540198ed66a3330eb99463.jpg", desc: "Same Day Delivery" },
+            { id: 11, name: "Fresh Sunflowers Bouquet", category: "flowers", price: 75000, image: "https://ae01.alicdn.com/kf/Se9f09e140d2b4d09b6f6ffda44a04669j.jpg", desc: "Same Day Delivery" },
+
+            // CAR KEYS
+            { id: 12, name: "Mercedes Benz Key", category: "keys", price: 69999, image: "https://ae01.alicdn.com/kf/S8dc7f1248ea74968916a9b4b29659536N.jpg", desc: "Smart Key Replica" },
+            { id: 13, name: "Honda Key", category: "keys", price: 70000, image: "https://ae01.alicdn.com/kf/S70500ea5a4794564ad5c34aef7e0a645y.jpg", desc: "Civic/Accord/CRV" },
+            { id: 14, name: "Tesla Model 3/Y Key", category: "keys", price: 100000, image: "https://ae01.alicdn.com/kf/Sdb6f0a6a9c01468a8382169006b9232dP.jpg", desc: "NFC Smart Card" },
+            { id: 15, name: "Toyota Key", category: "keys", price: 65000, image: "https://ae01.alicdn.com/kf/S31d006df32e847479146daf4663de4c41.jpg", desc: "Camry/Corolla" },
+            { id: 16, name: "BMW Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/S6cab3389db264d00a21196ebc6904ab5F.jpg", desc: "FEM/BDC Smart Key" },
+            { id: 17, name: "Audi Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/S76006d5875a3433a8cdfd5df56f6c6a4X.jpg", desc: "A3/A4/A6/A8" },
+            { id: 18, name: "Lexus Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/Sd402f45d172a42b28813ef83d9dcc875C.jpg", desc: "NX/RX/LX Series" },
+            { id: 19, name: "Range Rover Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/S190de7ebf23e4d779d5bee6bf7dc7b4cy.jpg", desc: "Evoque/Sport/Vogue" },
+            { id: 20, name: "Porsche Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/Sd76735428dfa4b4da0a9dbf1976d766bd.jpg", desc: "Cayenne/Panamera" },
+            { id: 21, name: "Ferrari Key", category: "keys", price: 68800, image: "https://ae01.alicdn.com/kf/Sc7ca9aa02d544a09a04f16cbcfddf61b2.jpg", desc: "458/488GTB" },
+
+            // SAFE BOX
+            { id: 22, name: "Electronic Safe Box", category: "safe", price: 75000, image: "https://ae01.alicdn.com/kf/S604a8d3b67fe49cc83f132d632f7d42cw.jpg", desc: "Digital Security Box" }
+        ];
+
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            renderAdminProducts();
+            updateCartUI();
+        });
+
+        // Navigation
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageName).classList.add('active');
+            window.scrollTo(0, 0);
+            
+            // Clear cart on logout
+            if (pageName === 'logout') {
+                cart = [];
+                updateCartUI();
+            }
+        }
+
+        function formatNaira(amount) {
+            return '₦' + amount.toLocaleString('en-NG');
+        }
+
+        // Products
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('productsGrid');
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x250?text=${encodeURIComponent(p.name)}'">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${p.category}</div>
+                        <div class="product-name">${p.name}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">${p.desc}</div>
+                        <div class="product-price">${formatNaira(p.price)}</div>
+                        <button class="add-to-cart" onclick="addToCart(${p.id})">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(category) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderProducts(category);
+        }
+
+        // Cart Functions
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            const existing = cart.find(item => item.id === id);
+            
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({...product, quantity: 1});
+            }
+            
+            updateCartUI();
+            showToast(`${product.name} added!`);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+            
+            const itemsDiv = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                itemsDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">Cart is empty</p>';
+            } else {
+                itemsDiv.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-image">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="cart-item-details">
+                            <div style="font-weight: bold;">${item.name}</div>
+                            <div style="color: #667eea;">${formatNaira(item.price)} x ${item.quantity}</div>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('cartTotal').textContent = formatNaira(total);
+        }
+
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        // Payment
+        function goToPayment() {
+            if (cart.length === 0) {
+                showToast('Cart is empty!');
+                return;
+            }
+            toggleCart();
+            showPage('payment');
+            updatePaymentSummary();
+        }
+
+        function updatePaymentSummary() {
+            const itemsDiv = document.getElementById('orderItems');
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            itemsDiv.innerHTML = cart.map(item => `
+                <div class="summary-item">
+                    <span>${item.name} (${item.quantity}x)</span>
+                    <span>${formatNaira(item.price * item.quantity)}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('paymentTotal').textContent = formatNaira(subtotal + 2500);
+        }
+
+        function sendWhatsAppOrder() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + 2500;
+            
+            const items = cart.map(item => `• ${item.name} (${item.quantity}x) - ${formatNaira(item.price * item.quantity)}`).join('\n');
+            const message = `*JetDrop Order* 🚀\n\n${items}\n\nSubtotal: ${formatNaira(subtotal)}\nDelivery: ₦2,500\n*Total: ${formatNaira(total)}*\n\nPlease confirm availability.`;
+            
+            // WHATSAPP NUMBER: +2349032455477
+            const phone = '2349032455477';
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Admin Functions
+        function renderAdminProducts() {
+            const tbody = document.getElementById('adminProductTable');
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td><img src="${p.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"></td>
+                    <td>${p.name}</td>
+                    <td>${p.category}</td>
+                    <td>${formatNaira(p.price)}</td>
+                    <td>50</td>
+                    <td>
+                        <button style="background: var(--secondary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer; margin-right: 0.5rem;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button style="background: #ff4757; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function showAdminSection(section) {
+            showToast(`${section} section - Coming soon!`);
+        }
+
+        // Auth
+        function handleLogin(e) {
+            e.preventDefault();
+            showToast('Login successful!');
+            setTimeout(() => showPage('dashboard'), 1000);
+        }
+
+        // Utility
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
